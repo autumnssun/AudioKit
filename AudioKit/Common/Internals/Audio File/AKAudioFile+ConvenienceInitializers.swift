@@ -118,24 +118,25 @@ extension AKAudioFile {
         let format = AVAudioFormat(standardFormatWithSampleRate: 44_100,
                                    channels: AVAudioChannelCount(channels))
 
-        let buffer = AVAudioPCMBuffer(pcmFormat: format,
+        let buffer = AVAudioPCMBuffer(pcmFormat: format!,
                                       frameCapacity:  AVAudioFrameCount(floatsArrays[0].count))
 
         // Fill the buffers
 
         for channel in 0..<channels {
-            let channelNData = buffer.floatChannelData?[channel]
-            for f in 0..<Int(buffer.frameCapacity) {
+            let channelNData = buffer?.floatChannelData?[channel]
+          let frameCap = Int(arc4random_uniform((buffer?.frameCapacity)!))
+            for f in 0..<frameCap {
                 channelNData?[f] = floatsArrays[channel][f]
             }
         }
 
         // set the buffer frameLength
-        buffer.frameLength = buffer.frameCapacity
+        buffer?.frameLength = (buffer?.frameCapacity)!
 
         // Write the buffer in file
         do {
-            try self.write(from: buffer)
+            try self.write(from: buffer!)
         } catch let error as NSError {
             AKLog("ERROR AKAudioFile: cannot writeFromBuffer Error: \(error)")
             throw error
